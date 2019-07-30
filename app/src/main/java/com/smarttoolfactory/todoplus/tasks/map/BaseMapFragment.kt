@@ -36,7 +36,7 @@ import dagger.android.support.DaggerFragment
 abstract class BaseMapFragment<T : ViewDataBinding?> : DaggerFragment(), OnMapReadyCallback {
 
 
-    protected lateinit var map: GoogleMap
+    protected  var map: GoogleMap? = null
     protected var dataBinding: T? = null
 
     /**
@@ -98,7 +98,6 @@ abstract class BaseMapFragment<T : ViewDataBinding?> : DaggerFragment(), OnMapRe
      */
     override fun onMapReady(googleMap: GoogleMap) {
 
-        Toast.makeText(activity, "onMapReady()", Toast.LENGTH_SHORT).show()
         map = googleMap
         initMap(googleMap)
 

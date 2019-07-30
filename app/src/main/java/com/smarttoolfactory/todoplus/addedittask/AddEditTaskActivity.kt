@@ -2,16 +2,11 @@ package com.smarttoolfactory.todoplus.addedittask
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.core.app.AlarmManagerCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +14,6 @@ import com.smarttoolfactory.todoplus.AlarmReceiver
 import com.smarttoolfactory.todoplus.R
 import com.smarttoolfactory.todoplus.databinding.ActivityAddEditTaskBinding
 import dagger.android.support.DaggerAppCompatActivity
-import java.util.*
 import javax.inject.Inject
 
 
@@ -72,22 +66,13 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
     }
 
 
-    //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        menuInflater.inflate(R.menu.add_edit_menu, menu)
-//
-//        return true
-//    }
-//
-//
-    override fun onOptionsItemSelected(item: MenuItem) =
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                true
-            }
-            else -> false
-        }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return false
+    }
 
 
     private fun saveTask() {
@@ -98,6 +83,9 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
 
     }
 
+    /**
+     * Open map fragment to add Location
+     */
     fun openLocationPicker() {
         setNavigation(ADD_LOCATION)
     }
@@ -127,7 +115,6 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
     fun cancelAlarm(requestCode: Int) {
 
     }
-
 
 
     /**
@@ -167,6 +154,7 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
             super.onBackPressed()
         } else {
             finish()
+//            supportFragmentManager.popBackStack()
         }
     }
 

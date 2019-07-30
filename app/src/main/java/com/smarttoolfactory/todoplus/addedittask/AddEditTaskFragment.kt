@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -15,6 +16,9 @@ import java.util.*
 import javax.inject.Inject
 
 
+/**
+ *  TODO: I got some issues with Data-Binding in this fragment will check again
+ */
 class AddEditTaskFragment : DaggerFragment() {
 
     @Inject
@@ -24,15 +28,21 @@ class AddEditTaskFragment : DaggerFragment() {
 
     private lateinit var dataBinding: FragmentAddEditTaskBinding
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         addEditTaskViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(AddEditTaskViewModel::class.java)
 
 
         dataBinding = DataBindingUtil.inflate(
-            inflater, com.smarttoolfactory.todoplus.R.layout.fragment_add_edit_task, container, false
+            inflater, R.layout.fragment_add_edit_task, container, false
         )
 
         dataBinding.viewmodel = addEditTaskViewModel
+
 
         return dataBinding.root
     }
@@ -40,10 +50,11 @@ class AddEditTaskFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dataBinding.ivRemoveDueDate.setOnClickListener {
-            dataBinding.ivRemoveDueDate.visibility = View.INVISIBLE
-        }
+        bindViews()
 
+    }
+
+    private fun bindViews() {
         dataBinding.llDueDate.setOnClickListener {
             openDateAndTimePicker()
         }
@@ -51,11 +62,43 @@ class AddEditTaskFragment : DaggerFragment() {
         dataBinding.llLocation.setOnClickListener {
             (activity as AddEditTaskActivity).openLocationPicker()
         }
+
+
+        // TODO Handle with Data-binding
+        addEditTaskViewModel.isLocationSet.observe(this, androidx.lifecycle.Observer {
+            if (it) {
+                dataBinding.ivRemoveLocation.visibility = View.VISIBLE
+                dataBinding.tvLocation.text = "${addEditTaskViewModel.task.value?.latitude},${addEditTaskViewModel.task.value?.longitude}"
+
+            } else {
+                dataBinding.ivRemoveLocation.visibility = View.GONE
+                dataBinding.tvLocation.text = getString(R.string.select_location)
+            }
+        })
+
+        addEditTaskViewModel.isDueDateSet.observe(this, androidx.lifecycle.Observer {
+            if (it) {
+                dataBinding.ivRemoveDueDate.visibility = View.VISIBLE
+                val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
+                dataBinding.tvDueDate.text = sdf.format(addEditTaskViewModel.task.value?.dueDate)
+
+            } else {
+                dataBinding.ivRemoveDueDate.visibility = View.GONE
+                dataBinding.tvDueDate.text = getString(R.string.select_due_date)
+            }
+        })
+
+        // Check if task save is successful
+        addEditTaskViewModel.isSaveTaskSuccess.observe(this, androidx.lifecycle.Observer {
+            if (it == false) {
+                Toast.makeText(activity, "Please fill fields", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(activity, "Task is saved", Toast.LENGTH_SHORT).show()
+                goBack()
+            }
+        })
     }
 
-    fun initFields() {
-
-    }
 
     companion object {
 
@@ -71,13 +114,11 @@ class AddEditTaskFragment : DaggerFragment() {
 
     private fun openDateAndTimePicker() {
 
-        val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
-
         val calendar: Calendar = Calendar.getInstance()
 
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val yearCalendar = calendar.get(Calendar.YEAR)
+        val monthCalendar = calendar.get(Calendar.MONTH)
+        val dayCalendar = calendar.get(Calendar.DAY_OF_MONTH)
         val hourCalendar = calendar.get(Calendar.HOUR_OF_DAY)
         val minuteCalendar = calendar.get(Calendar.MINUTE)
 
@@ -85,13 +126,9 @@ class AddEditTaskFragment : DaggerFragment() {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
 
-            dataBinding.tvDueDate.text = sdf.format(calendar.time)
-
-            addEditTaskViewModel.task.value?.dueDate = calendar.timeInMillis
-
-            dataBinding.ivRemoveDueDate.visibility = View.VISIBLE
-
             val requestCode = 101
+            addEditTaskViewModel.setDueDate(calendar.timeInMillis, requestCode)
+
             (activity as AddEditTaskActivity).setAlarm(calendar.timeInMillis, requestCode)
 
         }
@@ -107,7 +144,7 @@ class AddEditTaskFragment : DaggerFragment() {
         }
 
         val datePicker = DatePickerDialog(
-            activity, onDateSetListener, year, month, day
+            activity, onDateSetListener, yearCalendar, monthCalendar, dayCalendar
         )
 
         datePicker.datePicker.minDate = System.currentTimeMillis()
@@ -115,10 +152,26 @@ class AddEditTaskFragment : DaggerFragment() {
         datePicker.show()
 
     }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.add_edit_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.menu_add_edit_done) {
+           addEditTaskViewModel.saveTask(addEditTaskViewModel.task.value!!)
+        }
+
+        return true
+    }
+
+
+    private fun goBack() {
+        activity?.onBackPressed()
+    }
 
 }

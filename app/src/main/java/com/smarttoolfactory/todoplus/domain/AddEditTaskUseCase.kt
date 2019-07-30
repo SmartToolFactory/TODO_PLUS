@@ -11,11 +11,31 @@ class AddEditTaskUseCase @Inject constructor(private val repository: TasksReposi
 
 
     fun saveTask(task: Task): Completable {
-        return repository.saveTask(task).subscribeOn(Schedulers.io())
+
+        val isEmpty = task.isEmpty
+        val locationSet = task.locationSet
+        val dueDateSet = task.dueDateSet
+
+        if (!isEmpty && locationSet && dueDateSet) {
+            return repository.saveTask(task)
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnDispose {
                     println("AddEditTaskUseCase clearCompletedTasks() Completable doOnDispose()")
                 }
+        } else {
+            return Completable.error(Exception("Empty Fi"))
+        }
+
+    }
+
+    fun deleteTask(task: Task): Completable {
+        return repository.deleteTask(task)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnDispose {
+                println("AddEditTaskUseCase deleteTask() Completable doOnDispose()")
+            }
     }
 
     override fun dispose() {

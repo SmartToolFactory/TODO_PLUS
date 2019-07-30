@@ -3,6 +3,7 @@ package com.smarttoolfactory.todoplus.addedittask
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.smarttoolfactory.todoplus.R
 import com.smarttoolfactory.todoplus.R.layout
 import com.smarttoolfactory.todoplus.databinding.FragmentAddLocationBinding
 import com.smarttoolfactory.todoplus.tasks.map.BaseMapFragment
@@ -33,6 +35,7 @@ class AddLocationFragment() : BaseMapFragment<FragmentAddLocationBinding>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addTaskListViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(AddEditTaskViewModel::class.java)
+
     }
 
     override fun getLayoutId(): Int {
@@ -42,7 +45,7 @@ class AddLocationFragment() : BaseMapFragment<FragmentAddLocationBinding>() {
 
     override fun initMap(map: GoogleMap) {
 
-        // Add a marker in Sydney and move the camera
+        // Set camera position
         val istanbul = LatLng(41.01384, 28.94966)
         map.moveCamera(CameraUpdateFactory.newLatLng(istanbul))
         val zoom = CameraUpdateFactory.zoomTo(10f)
@@ -77,10 +80,28 @@ class AddLocationFragment() : BaseMapFragment<FragmentAddLocationBinding>() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(com.smarttoolfactory.todoplus.R.menu.add_location_menu, menu)
+        inflater.inflate(R.menu.add_location_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if (item.itemId == R.id.menu_location_done) {
+            addTaskListViewModel.setLocation(marker.position, getAddress())
+            goBack()
+        }
+
+        return true
+    }
+
+    private fun goBack() {
+        activity?.onBackPressed()
+    }
+
+    private fun getAddress(): String {
+        // TODO Implement this
+        return "Istanbul"
+    }
 
     companion object {
 

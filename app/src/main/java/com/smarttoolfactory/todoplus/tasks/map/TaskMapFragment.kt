@@ -5,7 +5,12 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.smarttoolfactory.todoplus.R
 import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.databinding.FragmentMapBinding
@@ -21,20 +26,9 @@ class TaskMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
 //    private lateinit var dataBinding: FragmentMapBinding
 
-    private lateinit var listTask: List<Task>
+    private  var listTask: List<Task>? = null
+    private val listMarkers = mutableListOf<Marker>()
 
-//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//
-//        taskListViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(TaskListViewModel::class.java)
-//
-//        dataBinding =
-//            DataBindingUtil.inflate<FragmentMapBinding>(inflater, R.layout.fragment_map, container, false)
-//
-////        dataBinding.viewmodel = taskListViewModel
-//
-//        return dataBinding.root
-//
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,11 +38,61 @@ class TaskMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
         taskListViewModel.items.observe(this, Observer {
             listTask = it
+
+            addMarkers(listTask)
         })
 
     }
 
+    private fun addMarkers(tasks: List<Task>?) {
+
+        if (map == null || tasks == null) return
+
+        map?.apply {
+            this.clear()
+            tasks
+                .forEach {task->
+                    task.takeIf {
+                        task.locationSet
+                    }?.apply {
+                        val latLng = LatLng(latitude, longitude)
+
+                        val options = MarkerOptions().title("Selected").position(latLng)
+                            .draggable(false)
+
+                        val marker = map?.addMarker(options)
+
+                        marker?.apply {
+                            marker.tag = task
+                            listMarkers.add(this)
+
+                        }
+                    }
+
+                }
+
+        }
+
+
+    }
+
     override fun initMap(map: GoogleMap) {
+
+        // Set camera position
+        val istanbul = LatLng(41.01384, 28.94966)
+        map.moveCamera(CameraUpdateFactory.newLatLng(istanbul))
+        val zoom = CameraUpdateFactory.zoomTo(10f)
+        map.animateCamera(zoom)
+
+        // Set map rotation button
+        map.uiSettings.isRotateGesturesEnabled = false
+        // Set my location button
+        map.uiSettings.isMyLocationButtonEnabled = true
+        // Set navigation menu
+//        map.uiSettings.isZoomControlsEnabled = true
+//        map.uiSettings.isMapToolbarEnabled = true
+
+        addMarkers(listTask)
 
     }
 
