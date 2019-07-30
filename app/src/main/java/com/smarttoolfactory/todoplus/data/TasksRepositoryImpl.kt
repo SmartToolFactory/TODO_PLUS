@@ -7,11 +7,13 @@ import io.reactivex.Single
 import javax.inject.Inject
 
 /**
- * [TasksRepositoryImpl] is concreate implementation of Repository pattern which acts as a Persistence
+ * [TasksRepositoryImpl] is concrete implementation of Repository pattern which acts as a Persistence
  * layer with local, remote and cached providers.
  */
 class TasksRepositoryImpl @Inject constructor(val tasksDataSource: TasksDataSource) : TasksRepository {
 
+    // TODO Add caching mechanism
+    private val cache: Map<String, List<Task>> = LinkedHashMap()
 
     override fun getTasks(forceUpdate: Boolean): Flowable<List<Task>> {
         return tasksDataSource.getTasks()

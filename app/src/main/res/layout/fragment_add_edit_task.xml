@@ -3,43 +3,128 @@
     <data>
 
         <variable
-            name="task"
-            type="com.smarttoolfactory.todoplus.data.model.Task" />
+                name="task"
+                type="com.smarttoolfactory.todoplus.data.model.Task"/>
 
         <variable
-            name="viewmodel"
-            type="com.smarttoolfactory.todoplus.addedittask.AddEditTaskViewModel" />
+                name="viewmodel"
+                type="com.smarttoolfactory.todoplus.addedittask.AddEditTaskViewModel"/>
 
     </data>
 
 
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+            android:layout_width="match_parent"
+            android:layout_margin="16dp"
+            android:layout_height="match_parent">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:text="@string/title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <EditText
-                android:id="@+id/et_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
             <TextView
-                android:text="@string/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title"/>
+
             <EditText
-                android:id="@+id/et_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                    android:id="@+id/et_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:text="@string/description"/>
+
+            <EditText
+                    android:id="@+id/et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:id="@+id/ll_due_date"
+                    android:orientation="horizontal">
+                <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:tint="@color/colorAccent"
+                        android:src="@drawable/ic_event"/>
+                <TextView
+                        android:id="@+id/tv_due_date"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="8dp"
+                        android:textSize="14sp"
+                        android:layout_gravity="center_vertical"
+                        android:text="Select due date"
+                        android:layout_height="wrap_content"/>
+
+                <ImageView
+                        android:id="@+id/iv_remove_due_date"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_remove_circle"
+                        android:layout_gravity="center_vertical"
+                        android:tint="#f00"/>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
+                    android:id="@+id/ll_location"
+                    android:orientation="horizontal">
+                <ImageView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:tint="@color/colorAccent"
+                        android:src="@drawable/ic_pin_drop"/>
+                <TextView
+                        android:id="@+id/tv_location"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="8dp"
+                        android:text="Select location"
+                        android:layout_gravity="center_vertical"
+                        android:textSize="14sp"
+                        android:layout_height="wrap_content"/>
+
+                <ImageView
+                        android:id="@+id/iv_remove_location"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_remove_circle"
+                        android:layout_gravity="center_vertical"
+                        android:tint="#f00"/>
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="24dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tags"/>
+
+            <Spinner android:layout_width="match_parent" android:layout_height="wrap_content">
+
+            </Spinner>
+
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+
     </androidx.core.widget.NestedScrollView>
+
 
 </layout>

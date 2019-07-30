@@ -2,8 +2,7 @@ package com.smarttoolfactory.todoplus.di
 
 
 import com.smarttoolfactory.todoplus.addedittask.AddEditTaskFragment
-import com.smarttoolfactory.todoplus.tasks.map.TaskMapFragment
-import com.smarttoolfactory.todoplus.tasks.list.TaskListFragment
+import com.smarttoolfactory.todoplus.addedittask.AddLocationFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -21,6 +20,8 @@ abstract class AddEditFragmentContributorModule {
     @ContributesAndroidInjector
     abstract fun contributeAddEditTaskFragment(): AddEditTaskFragment
 
+    @ContributesAndroidInjector
+    abstract fun contributeAddLocationFragmentFragment(): AddLocationFragment
 
 }
 

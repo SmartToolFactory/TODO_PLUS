@@ -20,6 +20,7 @@ data class Task(
         @ColumnInfo(name = "tag") var tag: String = "No tag available",
         @ColumnInfo(name = "completed") var isCompleted: Boolean = false,
         @ColumnInfo(name = "due_date") var dueDate: Long = -1L,
+        @ColumnInfo(name = "due_date_request_code") var dueDateRequestCode: Long = -1L,
         @ColumnInfo(name = "latitude") var latitude: Double = (-1).toDouble(),
         @ColumnInfo(name = "longitude") var longitude: Double = (-1).toDouble(),
         @ColumnInfo(name = "address") var address: String = ""

@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.smarttoolfactory.todoplus.R
-import com.smarttoolfactory.todoplus.databinding.FragmentMapBinding
 import dagger.android.support.DaggerFragment
 
 
@@ -32,10 +32,12 @@ import dagger.android.support.DaggerFragment
  *
  */
 
-abstract class BaseMapFragment : DaggerFragment(), OnMapReadyCallback {
+// 🔥 T ViewBinding is required to not set ViewBinding for each derived class that extends this Fragment
+abstract class BaseMapFragment<T : ViewDataBinding?> : DaggerFragment(), OnMapReadyCallback {
 
 
     protected lateinit var map: GoogleMap
+    protected var dataBinding: T? = null
 
     /**
      * Point that contains width and height of the fragment.
@@ -56,13 +58,16 @@ abstract class BaseMapFragment : DaggerFragment(), OnMapReadyCallback {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         println("BaseMapFragment onCreateView()")
 
-        val fragmentMapBinding =
-            DataBindingUtil.inflate<FragmentMapBinding>(inflater, R.layout.fragment_map, container, false)
+        // Each fragment can have it's seprate toolbar menu
+        setHasOptionsMenu(true)
 
-        val rootView = fragmentMapBinding.root
+        dataBinding =
+            DataBindingUtil.inflate<T>(inflater, getLayoutId(), container, false)
+
+        val rootView = dataBinding?.root
 
         // Get width and height of the fragment
-        rootView.post {
+        rootView?.post {
             dimensions.x = rootView.width
             dimensions.y = rootView.height
 
@@ -99,7 +104,13 @@ abstract class BaseMapFragment : DaggerFragment(), OnMapReadyCallback {
 
     }
 
+    /**
+     * This method is invoked just after map is ready and map instance is retrieved
+     */
     protected abstract fun initMap(map: GoogleMap)
 
-
+    /**
+     * Get layout id from derived class
+     */
+    protected abstract fun getLayoutId(): Int
 }
