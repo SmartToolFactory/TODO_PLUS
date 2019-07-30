@@ -5,8 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.MenuItem
+import android.view.WindowId
 import androidx.core.app.AlarmManagerCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -16,7 +16,6 @@ import com.smarttoolfactory.todoplus.R
 import com.smarttoolfactory.todoplus.databinding.ActivityAddEditTaskBinding
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
-
 
 class AddEditTaskActivity : DaggerAppCompatActivity() {
 
@@ -34,21 +33,34 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
 
     private lateinit var dataBinding: ActivityAddEditTaskBinding
 
-
+    private var editTaskId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val editTaskId = intent.getIntExtra(TASK_BUNDLE, -1)
 
         dataBinding =
             DataBindingUtil.setContentView(this, com.smarttoolfactory.todoplus.R.layout.activity_add_edit_task)
 
         addEditTaskViewModel = ViewModelProviders.of(this, viewModelFactory).get(AddEditTaskViewModel::class.java)
+        addEditTaskViewModel.getTaskById(editTaskId)
+            bindViews()
 
-        // This is required if LiveData is used for data-binding
-        dataBinding.lifecycleOwner = this
+        if (savedInstanceState == null) {
+            setNavigation(ADD_TASK)
+        }
 
-        bindViews()
 
+        supportFragmentManager.addOnBackStackChangedListener {
+           val backStackEntryCount = supportFragmentManager.backStackEntryCount
+
+           val fragmentsSize = supportFragmentManager.fragments.size
+
+            val currentFragment = supportFragmentManager.findFragmentById(com.smarttoolfactory.todoplus.R.id.content_frame)
+
+            println("🏪 AddEditTaskActivity onCreate() backStackEntryCount: $backStackEntryCount, fragmentsSize: $fragmentsSize, currentFragment: $currentFragment")
+        }
     }
 
 
@@ -61,8 +73,6 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
         val toolbar = dataBinding.toolbar
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        setNavigation(ADD_TASK)
 
     }
 
@@ -116,52 +126,46 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
     private fun setNavigation(id: Int) {
 
         if (id == ADD_TASK) {
-            // Set up Fragments
-            val fragment = AddEditTaskFragment.newInstance()
+            // Set up Add/Edit task fragment
 
-            supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.content_frame, fragment)
-                .commit()
+            var fragment: AddEditTaskFragment? =
+                supportFragmentManager.findFragmentById(com.smarttoolfactory.todoplus.R.id.content_frame) as? AddEditTaskFragment
+
+            if (fragment == null) {
+                fragment = AddEditTaskFragment.newInstance()
+
+                supportFragmentManager
+                    .beginTransaction()
+//                    .addToBackStack(null)
+                    .replace(com.smarttoolfactory.todoplus.R.id.content_frame, fragment)
+                    .commit()
+            }
+
         } else {
-            // Set up Fragments
-            val fragment = AddLocationFragment.newInstance()
 
-            supportFragmentManager
-                .beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.content_frame, fragment)
-                .commit()
+            // Set up Add location fragment
+
+            var fragment: AddLocationFragment? =
+                supportFragmentManager.findFragmentById(com.smarttoolfactory.todoplus.R.id.content_frame) as? AddLocationFragment
+
+            if (fragment == null) {
+                fragment = AddLocationFragment.newInstance()
+
+                supportFragmentManager
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(com.smarttoolfactory.todoplus.R.id.content_frame, fragment)
+                    .commit()
+            }
+
         }
     }
-
-    /**
-     * set back button behavior
-     */
-    override fun onBackPressed() {
-
-        val backStackEntryCount = supportFragmentManager.backStackEntryCount
-
-        if (backStackEntryCount != 1) {
-            super.onBackPressed()
-        } else {
-            finish()
-//            supportFragmentManager.popBackStack()
-        }
-
-
-    }
-
-
 
     companion object {
+        const val TASK_BUNDLE = "TASK_BUNDLE"
         const val ADD_TASK = 0
         const val ADD_LOCATION = 1
     }
-
-
-
 
 }
 

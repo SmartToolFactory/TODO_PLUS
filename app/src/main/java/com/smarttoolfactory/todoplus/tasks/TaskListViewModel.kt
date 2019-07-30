@@ -22,7 +22,6 @@ constructor(private val repository: TasksRepository,
             private val clearCompletedUseCase: ClearCompletedUseCase,
             private val compleTasksUseCase: CompleteTaskUseCase) : ViewModel() {
 
-
     private var compositeDisposable = CompositeDisposable()
 
     private var currentFiltering = TasksFilterType.ALL_TASKS
@@ -34,35 +33,20 @@ constructor(private val repository: TasksRepository,
     private var tasks = MutableLiveData<List<Task>>().apply {
         value = emptyList()
     }
-
     /**
      * Live data that contains tasks. This livedata is also used for databinding with list via
      *   app:items=
      */
     val items: LiveData<List<Task>> = tasks
 
+    // This LiveData depends on another so we can use a transformation.
+    val empty: LiveData<Boolean> = Transformations.map(tasks) {
+        println("👀 TaskListViewModel() Transformations.map()")
+
+        it.isEmpty()
+    }
 
     init {
-
-        // TODO This should be moved to a UseCase
-
-//        val disposable = getTasksUseCase.getTasks(false, currentFilter, userQuery)
-//                .subscribe(
-//                        {
-//                            // onNext
-//                            nextValue: List<Task> ->
-//                            tasks.value = nextValue
-//                            println("🥶 TaskListViewModel() onNext() size: $nextValue.size")
-//                        },
-//
-//                        {
-//                            // onError
-//                            error ->
-//                            tasks.value = emptyList()
-//                            println("🥶 TaskListViewMode() onError() error: ${error.message}")
-//
-//                        }
-//                )
 
         val disposable = getTasksUseCase.getTasksQuery(false, userQuery, currentFilter)
                 .subscribe(

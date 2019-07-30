@@ -46,20 +46,17 @@ constructor(
         input?.dueDateSet ?: true
     }
 
-    val isDueDateSet = SingleLiveEvent<Boolean>()
-    val isLocationSet = SingleLiveEvent<Boolean>()
 
-
-    val title = MutableLiveData<String>()
-    val description = MutableLiveData<String>()
-
+    val isDueDateSet = MutableLiveData<Boolean>()
+    val isLocationSet = MutableLiveData<Boolean>()
     /**
      * Check if save task success
      *
      * 🔥🔥 ??? Observed Multiple times if this is a [MutableLiveData]
      */
     val isSaveTaskSuccess = SingleLiveEvent<Boolean>()
-
+//    val title = MutableLiveData<String>()
+//    val description = MutableLiveData<String>()
 
     fun saveTask(task: Task) {
         addEditUseCase.saveTask(task)
@@ -84,6 +81,10 @@ constructor(
                 {
 
                 })
+    }
+
+    fun getTaskById(taskId : Int) {
+
     }
 
     /**
@@ -120,6 +121,8 @@ constructor(
         newTask.dueDateRequestCode = requestCode
         newTask.dueDate = timeInMillis
 
+
+        newTask.title = "Hello World"
         _task.value = newTask
 
         isDueDateSet.value = true

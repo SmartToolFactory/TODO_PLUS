@@ -143,7 +143,6 @@ class TasksActivity : DaggerAppCompatActivity() {
             }
 
             override fun onQueryTextSubmit(query: String): Boolean {
-
                 return false
             }
 
@@ -210,6 +209,13 @@ class TasksActivity : DaggerAppCompatActivity() {
         }
     }
 
+    fun editTask(taskId: Int) {
+        val intent = Intent(this, AddEditTaskActivity::class.java)
+        intent.putExtra(AddEditTaskActivity.TASK_BUNDLE, taskId)
+        // start your next activity
+        startActivity(intent)
+    }
+
     /**
      * Opens add/edit screen for user to add new task
      */
@@ -236,7 +242,7 @@ class TasksActivity : DaggerAppCompatActivity() {
             "Visit moon"
         )
 
-        val addressList = arrayOf("Istanbul", "Berlin","Paris", "London", "Amsterdam", "Helsinki", "Madrid")
+        val addressList = arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
 
         val random = Random()
 
@@ -266,49 +272,7 @@ class TasksActivity : DaggerAppCompatActivity() {
 
     }
 
-    fun getRandomLocation(point: LatLng, radius: Int): LatLng {
-
-        val randomPoints = mutableListOf<LatLng>()
-        val randomDistances = mutableListOf<Float>()
-        val myLocation = Location("")
-        myLocation.setLatitude(point.latitude)
-        myLocation.setLongitude(point.longitude)
-
-        //This is to generate 10 random points
-        for (i in 0..9) {
-            val x0 = point.latitude
-            val y0 = point.longitude
-
-            val random = Random()
-
-            // Convert radius from meters to degrees
-            val radiusInDegrees = (radius / 111000f).toDouble()
-
-            val u = random.nextDouble()
-            val v = random.nextDouble()
-            val w = radiusInDegrees * Math.sqrt(u)
-            val t = 2.0 * Math.PI * v
-            val x = w * Math.cos(t)
-            val y = w * Math.sin(t)
-
-            // Adjust the x-coordinate for the shrinking of the east-west distances
-            val new_x = x / Math.cos(y0)
-
-            val foundLatitude = new_x + x0
-            val foundLongitude = y + y0
-            val randomLatLng = LatLng(foundLatitude, foundLongitude)
-            randomPoints.add(randomLatLng)
-            val l1 = Location("")
-            l1.setLatitude(randomLatLng.latitude)
-            l1.setLongitude(randomLatLng.longitude)
-            randomDistances.add(l1.distanceTo(myLocation))
-        }
-        //Get nearest point to the centre
-        val indexOfNearestPointToCentre = randomDistances.indexOf(Collections.min(randomDistances))
-        return randomPoints.get(indexOfNearestPointToCentre)
-    }
-
-    protected fun getLocationInLatLngRad(radiusInMeters: Double, currentLocation: Location): Location {
+    private fun getLocationInLatLngRad(radiusInMeters: Double, currentLocation: Location): Location {
         val x0 = currentLocation.longitude
         val y0 = currentLocation.latitude
 

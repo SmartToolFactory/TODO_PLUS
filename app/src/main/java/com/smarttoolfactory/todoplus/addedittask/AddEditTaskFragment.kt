@@ -37,8 +37,8 @@ class AddEditTaskFragment : DaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        addEditTaskViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(AddEditTaskViewModel::class.java)
 
+        addEditTaskViewModel = ViewModelProviders.of(activity!!, viewModelFactory).get(AddEditTaskViewModel::class.java)
 
         dataBinding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_add_edit_task, container, false
@@ -46,16 +46,20 @@ class AddEditTaskFragment : DaggerFragment() {
 
         dataBinding.viewmodel = addEditTaskViewModel
 
+        // 🔥 This is required if LiveData is used for data-binding
+        dataBinding.lifecycleOwner = this
 
+
+//        println("AddEditTaskFragment onCreateView() $this")
         return dataBinding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         bindViews()
-
     }
+
 
     private fun bindViews() {
         dataBinding.llDueDate.setOnClickListener {
@@ -175,10 +179,12 @@ class AddEditTaskFragment : DaggerFragment() {
 
         if (item.itemId == R.id.menu_add_edit_done) {
 
-            addEditTaskViewModel.task.value?.apply {
-                title = dataBinding.etTitle.text.toString()
-                description = dataBinding.etDescription.text.toString()
-            }
+//            addEditTaskViewModel.task.value?.apply {
+//
+//                title = dataBinding.etTitle.text.toString()
+//                description = dataBinding.etDescription.text.toString()
+//
+//            }
             addEditTaskViewModel.saveTask(addEditTaskViewModel.task.value!!)
         }
 

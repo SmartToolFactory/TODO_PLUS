@@ -96,7 +96,6 @@ class GetTasksUseCase @Inject constructor(private val repository: TasksRepositor
                     // Decide which query
                     val flowable = if (it == null || it == "") {
                         repository.getTasks(forceUpdate)
-
                     } else {
                         repository.getTasks(forceUpdate, it)
                     }

@@ -7,10 +7,6 @@
         <import type="android.widget.CompoundButton"/>
 
         <variable
-                name="task"
-                type="com.smarttoolfactory.todoplus.data.model.Task"/>
-
-        <variable
                 name="viewmodel"
                 type="com.smarttoolfactory.todoplus.addedittask.AddEditTaskViewModel"/>
 
@@ -37,7 +33,7 @@
 
             <EditText
                     android:id="@+id/et_title"
-                    android:text="@={viewmodel.title}"
+                    android:text="@={viewmodel.task.title}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -52,7 +48,7 @@
             <EditText
                     android:id="@+id/et_description"
                     android:layout_width="match_parent"
-                    android:text="@={viewmodel.description}"
+                    android:text="@={viewmodel.task.description}"
                     android:layout_height="wrap_content"/>
 
             <LinearLayout
@@ -80,9 +76,8 @@
                         android:id="@+id/iv_remove_due_date"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:visibility="gone"
+                        android:visibility="@{viewmodel.isDueDateSet ? View.VISIBLE : View.GONE}"
                         android:onClick="@{(view) -> viewmodel.removeDueDate()}"
-
                         android:src="@drawable/ic_remove_circle"
                         android:layout_gravity="center_vertical"
                         android:tint="#f00"/>
@@ -113,7 +108,7 @@
                         android:id="@+id/iv_remove_location"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:visibility="gone"
+                        android:visibility="@{viewmodel.isLocationSet ? View.VISIBLE : View.GONE}"
                         android:onClick="@{(view) -> viewmodel.removeLocation()}"
                         android:src="@drawable/ic_remove_circle"
                         android:layout_gravity="center_vertical"

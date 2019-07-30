@@ -71,7 +71,7 @@ abstract class BaseMapFragment<T : ViewDataBinding?> : DaggerFragment(), OnMapRe
             dimensions.x = rootView.width
             dimensions.y = rootView.height
 
-            println("onCreateView() -> post() width: " + dimensions.x + ", height: " + dimensions.y)
+//            println("onCreateView() -> post() width: " + dimensions.x + ", height: " + dimensions.y)
         }
 
         return rootView
