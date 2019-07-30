@@ -31,7 +31,7 @@ class TasksRepositoryImpl @Inject constructor(val tasksDataSource: TasksDataSour
         return tasksDataSource.getTasksOnce(taskQuery)
     }
 
-    override fun getTask(taskId: String, forceUpdate: Boolean): Single<Task> {
+    override fun getTask(taskId: Long, forceUpdate: Boolean): Single<Task> {
         return tasksDataSource.getTask(taskId)
     }
 
@@ -43,7 +43,7 @@ class TasksRepositoryImpl @Inject constructor(val tasksDataSource: TasksDataSour
         return tasksDataSource.completeTask(task)
     }
 
-    override fun completeTask(taskId: String): Completable {
+    override fun completeTask(taskId: Long): Completable {
         return tasksDataSource.completeTask(taskId)
     }
 
@@ -51,7 +51,7 @@ class TasksRepositoryImpl @Inject constructor(val tasksDataSource: TasksDataSour
         return tasksDataSource.activateTask(task)
     }
 
-    override fun activateTask(taskId: String): Completable {
+    override fun activateTask(taskId: Long): Completable {
         return tasksDataSource.activateTask(taskId)
     }
 
@@ -63,7 +63,7 @@ class TasksRepositoryImpl @Inject constructor(val tasksDataSource: TasksDataSour
         return tasksDataSource.deleteAllTasks()
     }
 
-    override fun deleteTask(taskId: String): Completable {
+    override fun deleteTask(taskId: Long): Completable {
         return tasksDataSource.deleteTask(taskId)
     }
 

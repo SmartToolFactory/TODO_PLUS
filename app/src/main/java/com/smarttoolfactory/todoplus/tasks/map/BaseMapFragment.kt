@@ -51,12 +51,12 @@ abstract class BaseMapFragment<T : ViewDataBinding?> : DaggerFragment(), OnMapRe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        println("BaseMapFragment onCreate()")
+//        println("BaseMapFragment onCreate()")
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        println("BaseMapFragment onCreateView()")
+//        println("BaseMapFragment onCreateView()")
 
         // Each fragment can have it's seprate toolbar menu
         setHasOptionsMenu(true)

@@ -74,8 +74,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:' + rootProject.mapsVersion
 
     // ViewModel and LiveData
-    implementation 'android.arch.lifecycle:extensions:' + rootProject.archLifecycleVersion
-    kapt 'android.arch.lifecycle:compiler:' + rootProject.archLifecycleVersion
+//    implementation 'android.arch.lifecycle:extensions:' + rootProject.archLifecycleVersion
+//    kapt 'android.arch.lifecycle:compiler:' + rootProject.archLifecycleVersion
+
+    // ViewModel and LiveData
+    implementation 'androidx.lifecycle:lifecycle-extensions:' + rootProject.archLifecycleVersion
 
     // Room
     implementation 'androidx.room:room-runtime:' + rootProject.roomVersion

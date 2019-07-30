@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.MenuItem
 import androidx.core.app.AlarmManagerCompat
 import androidx.databinding.DataBindingUtil
@@ -33,6 +34,8 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
 
     private lateinit var dataBinding: ActivityAddEditTaskBinding
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -59,9 +62,7 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
         setNavigation(ADD_TASK)
-
 
     }
 
@@ -74,14 +75,6 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
         return false
     }
 
-
-    private fun saveTask() {
-
-    }
-
-    private fun deleteTask() {
-
-    }
 
     /**
      * Open map fragment to add Location
@@ -150,18 +143,25 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
 
         val backStackEntryCount = supportFragmentManager.backStackEntryCount
 
-        if (backStackEntryCount > 1) {
+        if (backStackEntryCount != 1) {
             super.onBackPressed()
         } else {
             finish()
 //            supportFragmentManager.popBackStack()
         }
+
+
     }
+
+
 
     companion object {
         const val ADD_TASK = 0
         const val ADD_LOCATION = 1
     }
+
+
+
 
 }
 

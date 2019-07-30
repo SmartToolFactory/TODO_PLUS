@@ -96,6 +96,7 @@ class AddLocationFragment() : BaseMapFragment<FragmentAddLocationBinding>() {
 
     private fun goBack() {
         activity?.onBackPressed()
+
     }
 
     private fun getAddress(): String {

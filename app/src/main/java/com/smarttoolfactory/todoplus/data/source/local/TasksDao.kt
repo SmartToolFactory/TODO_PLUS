@@ -56,7 +56,7 @@ interface TasksDao : BaseDao<Task> {
      * @return the task with taskId.
      */
     @Query("SELECT * FROM Tasks WHERE task_id = :taskId")
-    fun getTaskById(taskId: String): Single<Task>
+    fun getTaskById(taskId: Long): Single<Task>
 
 
     /**
@@ -75,7 +75,7 @@ interface TasksDao : BaseDao<Task> {
      * @param completed status to be updated
      */
     @Query("UPDATE tasks SET completed = :completed WHERE task_id = :taskId")
-    fun updateCompleted(taskId: String, completed: Boolean): Completable
+    fun updateCompleted(taskId: Long, completed: Boolean): Completable
 
     /**
      * Delete a task by id.
@@ -83,7 +83,7 @@ interface TasksDao : BaseDao<Task> {
      * @return the number of tasks deleted. This should always be 1.
      */
     @Query("DELETE FROM Tasks WHERE task_id = :taskId")
-    fun deleteTaskById(taskId: String): Completable
+    fun deleteTaskById(taskId: Long): Completable
 
     /**
      * Delete all tasks.

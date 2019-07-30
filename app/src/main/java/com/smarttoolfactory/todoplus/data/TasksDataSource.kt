@@ -37,23 +37,23 @@ interface TasksDataSource {
      */
     fun getTasksOnce(taskQuery: String): Single<List<Task>>
 
-    fun getTask(taskId: String): Single<Task>
+    fun getTask(taskId: Long): Single<Task>
 
     fun saveTask(task: Task): Completable
 
     fun completeTask(task: Task): Completable
 
-    fun completeTask(taskId: String): Completable
+    fun completeTask(taskId: Long): Completable
 
     fun activateTask(task: Task): Completable
 
-    fun activateTask(taskId: String): Completable
+    fun activateTask(taskId: Long): Completable
 
     fun clearCompletedTasks(): Completable
 
     fun deleteAllTasks(): Completable
 
-    fun deleteTask(taskId: String): Completable
+    fun deleteTask(taskId: Long): Completable
 
     fun deleteTask(task: Task): Completable
 

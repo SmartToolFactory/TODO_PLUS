@@ -1,7 +1,9 @@
 package com.smarttoolfactory.todoplus.tasks
 
 import android.content.Intent
+import android.location.Location
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,14 +13,17 @@ import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.smarttoolfactory.todoplus.R
+import com.google.android.gms.maps.model.LatLng
 import com.smarttoolfactory.todoplus.addedittask.AddEditTaskActivity
+import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.databinding.ActivityMainBinding
 import com.smarttoolfactory.todoplus.tasks.adapter.TaskFragmentStatePagerAdapter
 import com.smarttoolfactory.todoplus.tasks.list.TaskListFragment
 import com.smarttoolfactory.todoplus.tasks.map.TaskMapFragment
 import dagger.android.support.DaggerAppCompatActivity
+import java.util.*
 import javax.inject.Inject
+
 
 class TasksActivity : DaggerAppCompatActivity() {
 
@@ -36,20 +41,39 @@ class TasksActivity : DaggerAppCompatActivity() {
 
     private lateinit var dataBinding: ActivityMainBinding
 
+    /**
+     * Check if app is starting for the first time. If so, populate DB
+     */
+    private var isFistStart = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Keep screen on
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         super.onCreate(savedInstanceState)
 
-        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        dataBinding = DataBindingUtil.setContentView(this, com.smarttoolfactory.todoplus.R.layout.activity_main)
 
         taskListViewModel = ViewModelProviders.of(this, viewModelFactory).get(TaskListViewModel::class.java)
 
-        // This is required if LiveData is used for data-binding
+        // 🔥 This is required if LiveData is used for data-binding
         dataBinding.lifecycleOwner = this
 
         bindViews()
+
+
+        /*
+          Method for popluating db with fake data
+        */
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        isFistStart = sharedPreferences.getBoolean(getString(com.smarttoolfactory.todoplus.R.string.first_start), true)
+
+        if (isFistStart) {
+            populateDB()
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(getString(com.smarttoolfactory.todoplus.R.string.first_start), false)
+            editor.apply()
+        }
 
     }
 
@@ -104,10 +128,10 @@ class TasksActivity : DaggerAppCompatActivity() {
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.tasks_menu, menu)
+        menuInflater.inflate(com.smarttoolfactory.todoplus.R.menu.tasks_menu, menu)
 
         // SearchView
-        val searchItem = menu.findItem(R.id.action_search)
+        val searchItem = menu.findItem(com.smarttoolfactory.todoplus.R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.queryHint = "Title, Description or Tags"
 
@@ -144,39 +168,39 @@ class TasksActivity : DaggerAppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) =
-            when (item.itemId) {
-                R.id.menu_clear -> {
-                    taskListViewModel.clearCompletedTasks()
-                    true
-                }
-                R.id.menu_filter -> {
-                    showFilteringPopUpMenu()
-                    true
-                }
-                R.id.menu_refresh -> {
-                    taskListViewModel.loadTasks(true)
-                    true
-                }
-                else -> false
+        when (item.itemId) {
+            com.smarttoolfactory.todoplus.R.id.menu_clear -> {
+                taskListViewModel.clearCompletedTasks()
+                true
             }
+            com.smarttoolfactory.todoplus.R.id.menu_filter -> {
+                showFilteringPopUpMenu()
+                true
+            }
+            com.smarttoolfactory.todoplus.R.id.menu_refresh -> {
+                taskListViewModel.loadTasks(true)
+                true
+            }
+            else -> false
+        }
 
     /**
      * Shows a popup menu that is used to filter tasks by all, active or completed
      */
     private fun showFilteringPopUpMenu() {
-        val view = findViewById<View>(R.id.action_search)
+        val view = findViewById<View>(com.smarttoolfactory.todoplus.R.id.action_search)
 
         PopupMenu(this@TasksActivity, view).run {
-            menuInflater.inflate(R.menu.filter_tasks, menu)
+            menuInflater.inflate(com.smarttoolfactory.todoplus.R.menu.filter_tasks, menu)
 
             setOnMenuItemClickListener {
 
                 taskListViewModel.setFiltering(
-                        when (it.itemId) {
-                            R.id.active -> TasksFilterType.ACTIVE_TASKS
-                            R.id.completed -> TasksFilterType.COMPLETED_TASKS
-                            else -> TasksFilterType.ALL_TASKS
-                        }
+                    when (it.itemId) {
+                        com.smarttoolfactory.todoplus.R.id.active -> TasksFilterType.ACTIVE_TASKS
+                        com.smarttoolfactory.todoplus.R.id.completed -> TasksFilterType.COMPLETED_TASKS
+                        else -> TasksFilterType.ALL_TASKS
+                    }
                 )
                 taskListViewModel.loadTasks(false)
                 true
@@ -196,5 +220,125 @@ class TasksActivity : DaggerAppCompatActivity() {
         startActivity(intent)
     }
 
+    /**
+     * Mock Method
+     */
+    private fun populateDB() {
+
+        val titleList = arrayOf("Work", "Hobby", "Shopping", "Travel", "Vacation", "Business", "Voyage")
+        val description = arrayOf(
+            "Go to work",
+            "Play a game",
+            "Buy apple",
+            "Travel somewhere",
+            "Rest and refresh",
+            "Earn money",
+            "Visit moon"
+        )
+
+        val addressList = arrayOf("Istanbul", "Berlin","Paris", "London", "Amsterdam", "Helsinki", "Madrid")
+
+        val random = Random()
+
+        val latLng = LatLng(41.01384, 28.94966)
+        val location = Location("Dummy")
+        location.latitude = latLng.latitude
+        location.longitude = latLng.longitude
+
+
+        repeat(100) {
+
+            val customLocation = getLocationInLatLngRad(2_000_000.0, location)
+
+            println("TasksActivity Lat: ${customLocation.latitude}, Lon: ${customLocation.longitude}")
+
+            val task = Task(
+                title = titleList[random.nextInt(7)],
+                description = description[random.nextInt(7)],
+                latitude = customLocation.latitude,
+                longitude = customLocation.longitude,
+                locationSet = true,
+                address = addressList[random.nextInt(7)]
+            )
+
+            taskListViewModel.saveTask(task)
+        }
+
+    }
+
+    fun getRandomLocation(point: LatLng, radius: Int): LatLng {
+
+        val randomPoints = mutableListOf<LatLng>()
+        val randomDistances = mutableListOf<Float>()
+        val myLocation = Location("")
+        myLocation.setLatitude(point.latitude)
+        myLocation.setLongitude(point.longitude)
+
+        //This is to generate 10 random points
+        for (i in 0..9) {
+            val x0 = point.latitude
+            val y0 = point.longitude
+
+            val random = Random()
+
+            // Convert radius from meters to degrees
+            val radiusInDegrees = (radius / 111000f).toDouble()
+
+            val u = random.nextDouble()
+            val v = random.nextDouble()
+            val w = radiusInDegrees * Math.sqrt(u)
+            val t = 2.0 * Math.PI * v
+            val x = w * Math.cos(t)
+            val y = w * Math.sin(t)
+
+            // Adjust the x-coordinate for the shrinking of the east-west distances
+            val new_x = x / Math.cos(y0)
+
+            val foundLatitude = new_x + x0
+            val foundLongitude = y + y0
+            val randomLatLng = LatLng(foundLatitude, foundLongitude)
+            randomPoints.add(randomLatLng)
+            val l1 = Location("")
+            l1.setLatitude(randomLatLng.latitude)
+            l1.setLongitude(randomLatLng.longitude)
+            randomDistances.add(l1.distanceTo(myLocation))
+        }
+        //Get nearest point to the centre
+        val indexOfNearestPointToCentre = randomDistances.indexOf(Collections.min(randomDistances))
+        return randomPoints.get(indexOfNearestPointToCentre)
+    }
+
+    protected fun getLocationInLatLngRad(radiusInMeters: Double, currentLocation: Location): Location {
+        val x0 = currentLocation.longitude
+        val y0 = currentLocation.latitude
+
+        val random = Random()
+
+        // Convert radius from meters to degrees.
+        val radiusInDegrees = radiusInMeters / 111320f
+
+        // Get a random distance and a random angle.
+        val u = random.nextDouble()
+        val v = random.nextDouble()
+        val w = radiusInDegrees * Math.sqrt(u)
+        val t = 2.0 * Math.PI * v
+        // Get the x and y delta values.
+        val x = w * Math.cos(t)
+        val y = w * Math.sin(t)
+
+        // Compensate the x value.
+        val new_x = x / Math.cos(Math.toRadians(y0))
+
+        val foundLatitude: Double
+        val foundLongitude: Double
+
+        foundLatitude = y0 + y
+        foundLongitude = x0 + new_x
+
+        val copy = Location(currentLocation)
+        copy.latitude = foundLatitude
+        copy.longitude = foundLongitude
+        return copy
+    }
 
 }

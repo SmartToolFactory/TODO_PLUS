@@ -14,10 +14,10 @@ import java.util.*
  */
 @Entity(tableName = "Tasks")
 data class Task(
-    @PrimaryKey @ColumnInfo(name = "task_id") var id: String = UUID.randomUUID().toString(),
+    @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "task_id") var id: Long = 0L,
     @ColumnInfo(name = "title") var title: String = "",
     @ColumnInfo(name = "description") var description: String = "",
-    @ColumnInfo(name = "tag") var tag: String = "No tag available",
+    @ColumnInfo(name = "tag") var tag: String = "",
     @ColumnInfo(name = "completed") var isCompleted: Boolean = false,
 
     @ColumnInfo(name = "due_date_set") var dueDateSet: Boolean = false,

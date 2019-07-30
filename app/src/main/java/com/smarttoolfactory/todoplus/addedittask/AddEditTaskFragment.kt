@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.smarttoolfactory.todoplus.R
@@ -27,6 +28,8 @@ class AddEditTaskFragment : DaggerFragment() {
     private lateinit var addEditTaskViewModel: AddEditTaskViewModel
 
     private lateinit var dataBinding: FragmentAddEditTaskBinding
+
+    var counter = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,10 +68,12 @@ class AddEditTaskFragment : DaggerFragment() {
 
 
         // TODO Handle with Data-binding
-        addEditTaskViewModel.isLocationSet.observe(this, androidx.lifecycle.Observer {
-            if (it) {
+        addEditTaskViewModel.isLocationSet.observe(this, Observer {
+
+            if (it == true) {
                 dataBinding.ivRemoveLocation.visibility = View.VISIBLE
-                dataBinding.tvLocation.text = "${addEditTaskViewModel.task.value?.latitude},${addEditTaskViewModel.task.value?.longitude}"
+                dataBinding.tvLocation.text =
+                    "${addEditTaskViewModel.task.value?.latitude},${addEditTaskViewModel.task.value?.longitude}"
 
             } else {
                 dataBinding.ivRemoveLocation.visibility = View.GONE
@@ -77,7 +82,8 @@ class AddEditTaskFragment : DaggerFragment() {
         })
 
         addEditTaskViewModel.isDueDateSet.observe(this, androidx.lifecycle.Observer {
-            if (it) {
+
+            if (it == true) {
                 dataBinding.ivRemoveDueDate.visibility = View.VISIBLE
                 val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
                 dataBinding.tvDueDate.text = sdf.format(addEditTaskViewModel.task.value?.dueDate)
@@ -90,6 +96,11 @@ class AddEditTaskFragment : DaggerFragment() {
 
         // Check if task save is successful
         addEditTaskViewModel.isSaveTaskSuccess.observe(this, androidx.lifecycle.Observer {
+
+            // TODO 🔥🔥🔥 With Live Data this is triggered twice???
+            counter++
+            println("AddEditTaskFragment isSaveTaskSuccess() observe $counter")
+
             if (it == false) {
                 Toast.makeText(activity, "Please fill fields", Toast.LENGTH_SHORT).show()
             } else {
@@ -105,6 +116,7 @@ class AddEditTaskFragment : DaggerFragment() {
         fun newInstance(): AddEditTaskFragment {
 
             val args = Bundle()
+
 
             val fragment = AddEditTaskFragment()
             fragment.arguments = args
@@ -126,7 +138,7 @@ class AddEditTaskFragment : DaggerFragment() {
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
 
-            val requestCode = 101
+            val requestCode = Random().nextInt()
             addEditTaskViewModel.setDueDate(calendar.timeInMillis, requestCode)
 
             (activity as AddEditTaskActivity).setAlarm(calendar.timeInMillis, requestCode)
@@ -159,11 +171,15 @@ class AddEditTaskFragment : DaggerFragment() {
     }
 
 
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.itemId == R.id.menu_add_edit_done) {
-           addEditTaskViewModel.saveTask(addEditTaskViewModel.task.value!!)
+
+            addEditTaskViewModel.task.value?.apply {
+                title = dataBinding.etTitle.text.toString()
+                description = dataBinding.etDescription.text.toString()
+            }
+            addEditTaskViewModel.saveTask(addEditTaskViewModel.task.value!!)
         }
 
         return true
@@ -173,5 +189,6 @@ class AddEditTaskFragment : DaggerFragment() {
     private fun goBack() {
         activity?.onBackPressed()
     }
+
 
 }

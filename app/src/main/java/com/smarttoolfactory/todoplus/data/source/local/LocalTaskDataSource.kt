@@ -27,7 +27,7 @@ class LocalTaskDataSource @Inject constructor(val tasksDao: TasksDao) : TasksDat
         return tasksDao.getTasksOnce(taskQuery)
     }
 
-    override fun getTask(taskId: String): Single<Task> {
+    override fun getTask(taskId: Long): Single<Task> {
         return tasksDao.getTaskById(taskId)
     }
 
@@ -40,7 +40,7 @@ class LocalTaskDataSource @Inject constructor(val tasksDao: TasksDao) : TasksDat
         return tasksDao.updateCompleted(task.id, completed = true)
     }
 
-    override fun completeTask(taskId: String): Completable {
+    override fun completeTask(taskId: Long): Completable {
         return tasksDao.updateCompleted(taskId, completed = true)
     }
 
@@ -48,7 +48,7 @@ class LocalTaskDataSource @Inject constructor(val tasksDao: TasksDao) : TasksDat
         return tasksDao.updateCompleted(task.id, false)
     }
 
-    override fun activateTask(taskId: String): Completable {
+    override fun activateTask(taskId: Long): Completable {
         return tasksDao.updateCompleted(taskId, completed = false)
     }
 
@@ -60,7 +60,7 @@ class LocalTaskDataSource @Inject constructor(val tasksDao: TasksDao) : TasksDat
         return tasksDao.deleteTasks()
     }
 
-    override fun deleteTask(taskId: String): Completable {
+    override fun deleteTask(taskId: Long): Completable {
         return tasksDao.deleteTaskById(taskId)
     }
 

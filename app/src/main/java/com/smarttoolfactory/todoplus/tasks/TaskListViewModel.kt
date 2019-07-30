@@ -3,6 +3,7 @@ package com.smarttoolfactory.todoplus.tasks
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.smarttoolfactory.todoplus.data.TasksRepository
 import com.smarttoolfactory.todoplus.data.model.Task
@@ -34,7 +35,12 @@ constructor(private val repository: TasksRepository,
         value = emptyList()
     }
 
+    /**
+     * Live data that contains tasks. This livedata is also used for databinding with list via
+     *   app:items=
+     */
     val items: LiveData<List<Task>> = tasks
+
 
     init {
 
@@ -160,11 +166,11 @@ constructor(private val repository: TasksRepository,
      *
      * ⚠️ Called by DataBinding
      */
-    fun openTask(taskId: String) {
+    fun openTask(taskId: Long) {
 
     }
 
-    // TODO ADD THIS to ADD/EDIT Task
+    // TODO ADD THIS to ADD/EDIT Task,
     fun saveTask(task: Task) {
         repository.saveTask(task)
                 .subscribeOn(Schedulers.io())

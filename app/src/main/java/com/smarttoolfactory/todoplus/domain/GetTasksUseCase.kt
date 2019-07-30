@@ -92,7 +92,7 @@ class GetTasksUseCase @Inject constructor(private val repository: TasksRepositor
                     }
                 }
 
-                .flatMap {
+                .switchMap {
                     // Decide which query
                     val flowable = if (it == null || it == "") {
                         repository.getTasks(forceUpdate)

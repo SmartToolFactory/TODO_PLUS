@@ -24,11 +24,12 @@ class TaskMapFragment : BaseMapFragment<FragmentMapBinding>() {
 
     private lateinit var taskListViewModel: TaskListViewModel
 
-//    private lateinit var dataBinding: FragmentMapBinding
-
+    /**
+     * List that contains tasks.
+     * This is here because map can be loaded after database so it should require a non-empty list
+     */
     private  var listTask: List<Task>? = null
     private val listMarkers = mutableListOf<Marker>()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,7 +53,8 @@ class TaskMapFragment : BaseMapFragment<FragmentMapBinding>() {
             this.clear()
             tasks
                 .forEach {task->
-                    task.takeIf {
+                    task
+                        .takeIf {
                         task.locationSet
                     }?.apply {
                         val latLng = LatLng(latitude, longitude)
@@ -81,7 +83,7 @@ class TaskMapFragment : BaseMapFragment<FragmentMapBinding>() {
         // Set camera position
         val istanbul = LatLng(41.01384, 28.94966)
         map.moveCamera(CameraUpdateFactory.newLatLng(istanbul))
-        val zoom = CameraUpdateFactory.zoomTo(10f)
+        val zoom = CameraUpdateFactory.zoomTo(4f)
         map.animateCamera(zoom)
 
         // Set map rotation button
