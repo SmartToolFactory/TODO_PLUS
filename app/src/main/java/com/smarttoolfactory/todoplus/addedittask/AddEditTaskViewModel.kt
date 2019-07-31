@@ -57,21 +57,21 @@ constructor(
     val isLocationSet = MutableLiveData<Boolean>()
 
     /**
-     * Check if save task success
+     * Check if save task success, and trigger an event that can be listend only once
      *
      * 🔥🔥 ??? Observed Multiple times if this is a [MutableLiveData]
      */
-    val isSaveTaskSuccess = SingleLiveEvent<Boolean>()
+    val saveSuccessEvent = SingleLiveEvent<Boolean>()
 
     fun saveTask(task: Task) {
         addEditUseCase.saveTask(task)
             .subscribe(
                 {
-                    isSaveTaskSuccess.value = true
+                    saveSuccessEvent.value = true
                 },
                 {
-                    isSaveTaskSuccess.value = false
-                    println("🥺 AddEditTaskViewModel saveTask() onError $isSaveTaskSuccess.value ")
+                    saveSuccessEvent.value = false
+                    println("🥺 AddEditTaskViewModel saveTask() onError $saveSuccessEvent.value ")
 
                 })
     }
@@ -89,12 +89,18 @@ constructor(
                 })
     }
 
+    /**
+     * Create a new [Task] instance and set values of depending [LiveData] instances
+     */
     private fun refreshTask() {
         _task.value = Task()
         isDueDateSet.value = _task.value?.dueDateSet
         isLocationSet.value =  _task.value?.locationSet
     }
 
+    /**
+     * Get the task with specified id, if it does not exist create a new one
+     */
     fun getTaskById(taskId: Long) {
         addEditUseCase.getTaskById(taskId)
             .subscribe(
@@ -134,6 +140,9 @@ constructor(
 
     }
 
+    /**
+     * Set due date of the Task
+     */
     fun setDueDate(timeInMillis: Long, requestCode: Int) {
 
         var newTask = task.value?.copy()

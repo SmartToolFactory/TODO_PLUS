@@ -43,7 +43,7 @@ constructor(private val repository: TasksRepository,
     /**
      * Key to listen for editing task
      */
-    val openEditTask = SingleLiveEvent<Long>()
+    val openEditTaskEvent = SingleLiveEvent<Long>()
 
     // This LiveData depends on another so we can use a transformation.
     val empty: LiveData<Boolean> = Transformations.map(tasks) {
@@ -157,7 +157,7 @@ constructor(private val repository: TasksRepository,
      * ⚠️ Called by DataBinding
      */
     fun openTask(taskId: Long) {
-        openEditTask.value = taskId
+        openEditTaskEvent.value = taskId
     }
 
     // TODO ADD THIS to ADD/EDIT Task,

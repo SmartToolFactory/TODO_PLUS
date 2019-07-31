@@ -57,11 +57,12 @@ class AddEditTaskFragment : DaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindViews()
+        subscribeUI()
     }
 
 
-    private fun bindViews() {
+    private fun subscribeUI() {
+
         dataBinding.llDueDate.setOnClickListener {
             openDateAndTimePicker()
         }
@@ -75,12 +76,12 @@ class AddEditTaskFragment : DaggerFragment() {
         addEditTaskViewModel.isLocationSet.observe(this, Observer {
 
             if (it == true) {
-                dataBinding.ivRemoveLocation.visibility = View.VISIBLE
+//                dataBinding.ivRemoveLocation.visibility = View.VISIBLE
                 dataBinding.tvLocation.text =
                     "${addEditTaskViewModel.task.value?.latitude},${addEditTaskViewModel.task.value?.longitude}"
 
             } else {
-                dataBinding.ivRemoveLocation.visibility = View.GONE
+//                dataBinding.ivRemoveLocation.visibility = View.GONE
                 dataBinding.tvLocation.text = getString(R.string.select_location)
             }
         })
@@ -88,22 +89,22 @@ class AddEditTaskFragment : DaggerFragment() {
         addEditTaskViewModel.isDueDateSet.observe(this, androidx.lifecycle.Observer {
 
             if (it == true) {
-                dataBinding.ivRemoveDueDate.visibility = View.VISIBLE
+//                dataBinding.ivRemoveDueDate.visibility = View.VISIBLE
                 val sdf = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
                 dataBinding.tvDueDate.text = sdf.format(addEditTaskViewModel.task.value?.dueDate)
 
             } else {
-                dataBinding.ivRemoveDueDate.visibility = View.GONE
+//                dataBinding.ivRemoveDueDate.visibility = View.GONE
                 dataBinding.tvDueDate.text = getString(R.string.select_due_date)
             }
         })
 
         // Check if task save is successful
-        addEditTaskViewModel.isSaveTaskSuccess.observe(this, androidx.lifecycle.Observer {
+        addEditTaskViewModel.saveSuccessEvent.observe(this, androidx.lifecycle.Observer {
 
-            // TODO 🔥🔥🔥 With Live Data this is triggered twice???
+            // TODO 🔥🔥🔥 With Live Data this is triggered multiple times???
             counter++
-            println("AddEditTaskFragment isSaveTaskSuccess() observe $counter")
+            println("AddEditTaskFragment saveSuccessEvent() observe $counter")
 
             if (it == false) {
                 Toast.makeText(activity, "Please fill fields", Toast.LENGTH_SHORT).show()

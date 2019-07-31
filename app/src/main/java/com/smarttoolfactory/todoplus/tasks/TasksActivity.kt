@@ -134,7 +134,7 @@ class TasksActivity : DaggerAppCompatActivity() {
             addNewTask()
         }
 
-        taskListViewModel.openEditTask.observe(this, Observer {
+        taskListViewModel.openEditTaskEvent.observe(this, Observer {
             editTask(it)
         })
     }
