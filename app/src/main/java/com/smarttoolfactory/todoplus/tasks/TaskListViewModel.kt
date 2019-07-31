@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.smarttoolfactory.todoplus.addedittask.SingleLiveEvent
 import com.smarttoolfactory.todoplus.data.TasksRepository
 import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.domain.ClearCompletedUseCase
@@ -38,6 +39,11 @@ constructor(private val repository: TasksRepository,
      *   app:items=
      */
     val items: LiveData<List<Task>> = tasks
+
+    /**
+     * Key to listen for editing task
+     */
+    val openEditTask = SingleLiveEvent<Long>()
 
     // This LiveData depends on another so we can use a transformation.
     val empty: LiveData<Boolean> = Transformations.map(tasks) {
@@ -151,7 +157,7 @@ constructor(private val repository: TasksRepository,
      * ⚠️ Called by DataBinding
      */
     fun openTask(taskId: Long) {
-
+        openEditTask.value = taskId
     }
 
     // TODO ADD THIS to ADD/EDIT Task,

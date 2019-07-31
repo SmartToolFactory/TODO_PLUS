@@ -59,7 +59,7 @@ interface TasksRepository {
     fun getTasksOnce(forceUpdate: Boolean = false, taskQuery: String): Single<List<Task>>
 
 
-    fun getTask(taskId: Long, forceUpdate: Boolean = false): Single<Task>
+    fun getTask(taskId: Long): Single<Task>
 
     fun saveTask(task: Task): Completable
 

@@ -31,7 +31,7 @@ class TasksRepositoryImpl @Inject constructor(val tasksDataSource: TasksDataSour
         return tasksDataSource.getTasksOnce(taskQuery)
     }
 
-    override fun getTask(taskId: Long, forceUpdate: Boolean): Single<Task> {
+    override fun getTask(taskId: Long): Single<Task> {
         return tasksDataSource.getTask(taskId)
     }
 

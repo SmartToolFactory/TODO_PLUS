@@ -33,12 +33,12 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
 
     private lateinit var dataBinding: ActivityAddEditTaskBinding
 
-    private var editTaskId = -1
+    private var editTaskId = -1L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val editTaskId = intent.getIntExtra(TASK_BUNDLE, -1)
+         editTaskId = intent.getLongExtra(TASK_BUNDLE, -1)
 
         dataBinding =
             DataBindingUtil.setContentView(this, com.smarttoolfactory.todoplus.R.layout.activity_add_edit_task)
@@ -81,6 +81,8 @@ class AddEditTaskActivity : DaggerAppCompatActivity() {
 
         if (item.itemId == android.R.id.home) {
             onBackPressed()
+        } else if(item.itemId == R.id.menu_delete) {
+            addEditTaskViewModel.deleteTask(editTaskId)
         }
         return false
     }

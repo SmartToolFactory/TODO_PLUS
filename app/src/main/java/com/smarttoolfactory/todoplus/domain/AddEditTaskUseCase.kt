@@ -3,6 +3,7 @@ package com.smarttoolfactory.todoplus.domain
 import com.smarttoolfactory.todoplus.data.TasksRepository
 import com.smarttoolfactory.todoplus.data.model.Task
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -29,8 +30,17 @@ class AddEditTaskUseCase @Inject constructor(private val repository: TasksReposi
 
     }
 
-    fun deleteTask(task: Task): Completable {
-        return repository.deleteTask(task)
+    fun deleteTask(taskId: Long): Completable {
+        return repository.deleteTask(taskId)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnDispose {
+                println("AddEditTaskUseCase deleteTask() Completable doOnDispose()")
+            }
+    }
+
+    fun getTaskById(taskId: Long): Single<Task> {
+        return repository.getTask(taskId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnDispose {

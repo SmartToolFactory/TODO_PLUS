@@ -11,6 +11,7 @@ import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
@@ -22,6 +23,7 @@ import com.smarttoolfactory.todoplus.tasks.list.TaskListFragment
 import com.smarttoolfactory.todoplus.tasks.map.TaskMapFragment
 import dagger.android.support.DaggerAppCompatActivity
 import java.util.*
+
 import javax.inject.Inject
 
 
@@ -118,12 +120,23 @@ class TasksActivity : DaggerAppCompatActivity() {
         val tabLayout = dataBinding.tabs
         tabLayout.setupWithViewPager(viewPager)
 
+        subscribeUI()
+
+    }
+
+    /**
+     * Method for listening UI changes by user interaction
+     */
+    private fun subscribeUI() {
         // Set up Floating Action Button
 
         dataBinding.fabAddTask.setOnClickListener {
             addNewTask()
         }
 
+        taskListViewModel.openEditTask.observe(this, Observer {
+            editTask(it)
+        })
     }
 
 
@@ -209,7 +222,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         }
     }
 
-    fun editTask(taskId: Int) {
+    fun editTask(taskId: Long) {
         val intent = Intent(this, AddEditTaskActivity::class.java)
         intent.putExtra(AddEditTaskActivity.TASK_BUNDLE, taskId)
         // start your next activity

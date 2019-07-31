@@ -67,8 +67,8 @@ constructor(
                 })
     }
 
-    fun deleteTask(task: Task) {
-        addEditUseCase.deleteTask(task)
+    fun deleteTask(taskId : Long) {
+        addEditUseCase.deleteTask(taskId)
             .subscribe(
                 {
                     _task.value = null

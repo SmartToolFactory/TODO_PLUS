@@ -29,7 +29,7 @@ constructor(
 
     val task: LiveData<Task> = _task
 
-    // ??? Transformations.map not working?
+    // 🔥🔥🔥 ??? Transformations.map not working?
     /**
      * Used for data-binding to check if a location is set to task
      */
@@ -47,44 +47,69 @@ constructor(
     }
 
 
+    /**
+     * Live data to check if due date is set, this one sets visbility of remove duedate button
+     */
     val isDueDateSet = MutableLiveData<Boolean>()
+    /**
+     * Live data to check if location is set, this one sets visbility of remove location button
+     */
     val isLocationSet = MutableLiveData<Boolean>()
+
     /**
      * Check if save task success
      *
      * 🔥🔥 ??? Observed Multiple times if this is a [MutableLiveData]
      */
     val isSaveTaskSuccess = SingleLiveEvent<Boolean>()
-//    val title = MutableLiveData<String>()
-//    val description = MutableLiveData<String>()
 
     fun saveTask(task: Task) {
         addEditUseCase.saveTask(task)
             .subscribe(
                 {
                     isSaveTaskSuccess.value = true
-//                    _task.value = null
                 },
                 {
                     isSaveTaskSuccess.value = false
-                    println("🥺 AddEditTaskViewModel onError $isSaveTaskSuccess.value ")
+                    println("🥺 AddEditTaskViewModel saveTask() onError $isSaveTaskSuccess.value ")
 
                 })
     }
 
-    fun deleteTask(task: Task) {
-        addEditUseCase.deleteTask(task)
+    fun deleteTask(taskId: Long) {
+        addEditUseCase.deleteTask(taskId)
             .subscribe(
                 {
-                    _task.value = null
+                    println("🗿 TaskListViewModel deleteTask() onComplete()")
+                    refreshTask()
                 },
                 {
-
+                    println("🗿 TaskListViewModel deleteTask() error() ${it.message}")
+                    refreshTask()
                 })
     }
 
-    fun getTaskById(taskId : Int) {
+    private fun refreshTask() {
+        _task.value = Task()
+        isDueDateSet.value = _task.value?.dueDateSet
+        isLocationSet.value =  _task.value?.locationSet
+    }
 
+    fun getTaskById(taskId: Long) {
+        addEditUseCase.getTaskById(taskId)
+            .subscribe(
+                {
+                    print("AddEditTaskViewModel getTaskById() task: $it")
+                    _task.value = it
+
+                },
+                {
+                    println("🥺 AddEditTaskViewModel getTaskById() takId $taskId, error: ${it.message}")
+                    refreshTask()
+                })
+
+        isLocationSet.value = _task.value?.locationSet
+        isDueDateSet.value = _task.value?.dueDateSet
     }
 
     /**
@@ -121,8 +146,6 @@ constructor(
         newTask.dueDateRequestCode = requestCode
         newTask.dueDate = timeInMillis
 
-
-        newTask.title = "Hello World"
         _task.value = newTask
 
         isDueDateSet.value = true
