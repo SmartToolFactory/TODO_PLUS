@@ -14,6 +14,9 @@ import io.reactivex.Single
 @Dao
 interface TasksDao : BaseDao<Task> {
 
+//    @Query("SELECT * from Tasks")
+//    fun getTasksAndTas(): Flowable<List<TaskAllTags>>
+
     /**
      * Select all tasks from the tasks table. This method returns a [Flowable] which
      * emits values as long as observable changes or insert/ delete operation is invoked

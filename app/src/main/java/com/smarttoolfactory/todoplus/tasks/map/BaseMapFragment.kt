@@ -32,7 +32,7 @@ import dagger.android.support.DaggerFragment
  *
  */
 
-// 🔥 T ViewBinding is required to not set ViewBinding for each derived class that extends this Fragment
+// 🔥 ViewBinding is required to not set ViewBinding for each derived class that extends this Fragment
 abstract class BaseMapFragment<T : ViewDataBinding?> : DaggerFragment(), OnMapReadyCallback {
 
 

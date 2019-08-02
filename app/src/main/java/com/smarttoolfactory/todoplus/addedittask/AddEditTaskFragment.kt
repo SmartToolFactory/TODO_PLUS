@@ -102,7 +102,7 @@ class AddEditTaskFragment : DaggerFragment() {
         // Check if task save is successful
         addEditTaskViewModel.saveSuccessEvent.observe(this, androidx.lifecycle.Observer {
 
-            // TODO 🔥🔥🔥 With Live Data this is triggered multiple times???
+            // TODO 🔥🔥🔥 With Live Data this is triggered multiple times?
             counter++
             println("AddEditTaskFragment saveSuccessEvent() observe $counter")
 

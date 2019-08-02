@@ -71,7 +71,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         isFistStart = sharedPreferences.getBoolean(getString(com.smarttoolfactory.todoplus.R.string.first_start), true)
 
         if (isFistStart) {
-            populateDB()
+//            populateDB()
             val editor = sharedPreferences.edit()
             editor.putBoolean(getString(com.smarttoolfactory.todoplus.R.string.first_start), false)
             editor.apply()
@@ -146,7 +146,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         // SearchView
         val searchItem = menu.findItem(com.smarttoolfactory.todoplus.R.id.action_search)
         val searchView = searchItem.actionView as SearchView
-        searchView.queryHint = "Title, Description or Tags"
+        searchView.queryHint = "Title, Description or Tag"
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -256,6 +256,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         )
 
         val addressList = arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
+        val tagList = arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
 
         val random = Random()
 
@@ -265,7 +266,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         location.longitude = latLng.longitude
 
 
-        repeat(100) {
+        repeat(1000) {
 
             val customLocation = getLocationInLatLngRad(2_000_000.0, location)
 
@@ -277,6 +278,8 @@ class TasksActivity : DaggerAppCompatActivity() {
                 latitude = customLocation.latitude,
                 longitude = customLocation.longitude,
                 locationSet = true,
+                dueDate = System.currentTimeMillis() + 60_000,
+                dueDateSet = true,
                 address = addressList[random.nextInt(7)]
             )
 

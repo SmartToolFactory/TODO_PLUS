@@ -16,18 +16,30 @@ import com.smarttoolfactory.todoplus.tasks.adapter.TasksAdapter.CustomViewHolder
 class TasksAdapter(private val viewModel: TaskListViewModel) :
         ListAdapter<Task, CustomViewHolder>(TaskDiffCallback()) {
 
-    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
-        val item = getItem(position)
-
-        holder.bind(viewModel, item)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomViewHolder {
+        println("🎃🎃 TaskAdapter onCreateViewHolder() viewType: $viewType")
         return CustomViewHolder.from(parent)
     }
 
+    override fun onBindViewHolder(holder: CustomViewHolder, position: Int) {
+        val item = getItem(position)
+        println("🔥🔥 TaskAdapter onBindViewHolder() position: $position, holder: $holder")
+        holder.bind(viewModel, item)
+    }
+
+    override fun onViewRecycled(holder: CustomViewHolder) {
+        super.onViewRecycled(holder)
+        println("🥶🥶 TaskAdapter onViewRecycled() holder $holder")
+    }
+
+
+
+
     class CustomViewHolder private constructor(val binding: TaskItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
+
+
+
 
         fun bind(viewModel: TaskListViewModel, item: Task) {
 
@@ -35,6 +47,7 @@ class TasksAdapter(private val viewModel: TaskListViewModel) :
             binding.task = item
             binding.executePendingBindings()
         }
+
 
         companion object {
             fun from(parent: ViewGroup): CustomViewHolder {

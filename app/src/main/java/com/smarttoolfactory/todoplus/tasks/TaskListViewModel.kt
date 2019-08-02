@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.smarttoolfactory.todoplus.addedittask.SingleLiveEvent
+import com.smarttoolfactory.todoplus.utils.SingleLiveEvent
 import com.smarttoolfactory.todoplus.data.TasksRepository
 import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.domain.ClearCompletedUseCase

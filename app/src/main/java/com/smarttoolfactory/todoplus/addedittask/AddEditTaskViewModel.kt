@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.smarttoolfactory.todoplus.data.TasksRepository
 import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.domain.AddEditTaskUseCase
+import com.smarttoolfactory.todoplus.utils.SingleLiveEvent
 import javax.inject.Inject
 
 /**
@@ -29,26 +30,26 @@ constructor(
 
     val task: LiveData<Task> = _task
 
-    // 🔥🔥🔥 ??? Transformations.map not working?
+    // 🔥🔥🔥 Transformaions.map works if livedata to be changed is observed directly or by data-binding
     /**
      * Used for data-binding to check if a location is set to task
      */
-    val isLocationChanged: LiveData<Boolean> = Transformations.map(_task) { input: Task? ->
-        println("😎 AddEditTaskViewModel isLocationChanged Transformed")
-        input?.locationSet ?: true
-    }
+//    val isLocationChanged: LiveData<Boolean> = Transformations.map(_task) { input: Task? ->
+//        println("😎 AddEditTaskViewModel isLocationChanged Transformed")
+//        input?.locationSet ?: true
+//    }
 
     /**
      * Used for data-binding to check if a location is set to task
      */
-    val isDueDateChanged: LiveData<Boolean> = Transformations.map(_task) { input: Task? ->
-        println("😎 AddEditTaskViewModel isDueDateChanged Transformed")
-        input?.dueDateSet ?: true
-    }
+//    val isDueDateChanged: LiveData<Boolean> = Transformations.map(_task) { input: Task? ->
+//        println("😎 AddEditTaskViewModel isDueDateChanged Transformed")
+//        input?.dueDateSet ?: true
+//    }
 
 
     /**
-     * Live data to check if due date is set, this one sets visbility of remove duedate button
+     * Live data to check if due date is set, this one sets visibility of remove duedate button
      */
     val isDueDateSet = MutableLiveData<Boolean>()
     /**
@@ -62,6 +63,17 @@ constructor(
      * 🔥🔥 ??? Observed Multiple times if this is a [MutableLiveData]
      */
     val saveSuccessEvent = SingleLiveEvent<Boolean>()
+
+    init {
+        Transformations.map(isDueDateSet) { input: Boolean? ->
+
+            println("😎 AddEditTaskViewModel INIT isDueDateSet() BEFORE -> task dueDate: ${task.value?.dueDate}")
+
+            task.value?.dueDate ?: true
+
+            println("😎 AddEditTaskViewModel INIT isDueDateSet() AFTER -> task dueDate: ${task.value?.dueDate}")
+        }
+    }
 
     fun saveTask(task: Task) {
         addEditUseCase.saveTask(task)
@@ -80,20 +92,26 @@ constructor(
         addEditUseCase.deleteTask(taskId)
             .subscribe(
                 {
+                    refreshTask(null)
                     println("🗿 TaskListViewModel deleteTask() onComplete()")
-                    refreshTask()
                 },
                 {
+                    refreshTask(null)
                     println("🗿 TaskListViewModel deleteTask() error() ${it.message}")
-                    refreshTask()
+
                 })
+
     }
 
     /**
      * Create a new [Task] instance and set values of depending [LiveData] instances
      */
-    private fun refreshTask() {
-        _task.value = Task()
+    private fun refreshTask(task: Task?) {
+        if (task != null) {
+            _task.value = task
+        }else {
+            _task.value = Task()
+        }
         isDueDateSet.value = _task.value?.dueDateSet
         isLocationSet.value =  _task.value?.locationSet
     }
@@ -106,16 +124,15 @@ constructor(
             .subscribe(
                 {
                     print("AddEditTaskViewModel getTaskById() task: $it")
-                    _task.value = it
+                  refreshTask(it)
 
                 },
                 {
                     println("🥺 AddEditTaskViewModel getTaskById() takId $taskId, error: ${it.message}")
-                    refreshTask()
+                    refreshTask(null)
                 })
 
-        isLocationSet.value = _task.value?.locationSet
-        isDueDateSet.value = _task.value?.dueDateSet
+
     }
 
     /**
