@@ -49,7 +49,7 @@ class GetTasksUseCase @Inject constructor(private val repository: TasksRepositor
                             }
 
                             .filter {
-                                // Check if keyword entered by user matches title, descriptio or tag
+                                // Check if keyword entered by user matches title, description or tag
                                 it.title.startsWith(query) || it.description.startsWith(query) || it.tag.startsWith(query)
                             }
 
@@ -83,7 +83,7 @@ class GetTasksUseCase @Inject constructor(private val repository: TasksRepositor
                     t1
                 })
 
-                // Do not filter if query is empty if not look for at least 3 letters
+                // Do not filter if query is empty, if not, look for at least 3 letters
                 .filter {
                     if (it == null || it == "") {
                         true

@@ -11,19 +11,19 @@ import android.view.WindowManager
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
+import com.smarttoolfactory.todoplus.R
 import com.smarttoolfactory.todoplus.addedittask.AddEditTaskActivity
 import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.databinding.ActivityMainBinding
-import com.smarttoolfactory.todoplus.tasks.adapter.TaskFragmentStatePagerAdapter
 import com.smarttoolfactory.todoplus.tasks.list.TaskListFragment
 import com.smarttoolfactory.todoplus.tasks.map.TaskMapFragment
 import dagger.android.support.DaggerAppCompatActivity
 import java.util.*
-
 import javax.inject.Inject
 
 
@@ -77,6 +77,8 @@ class TasksActivity : DaggerAppCompatActivity() {
             editor.apply()
         }
 
+        subscribeUI()
+
     }
 
 
@@ -91,8 +93,45 @@ class TasksActivity : DaggerAppCompatActivity() {
 
         // Set up ViewPager
 
-        val taskListFragment = TaskListFragment.newInstance()
-        val taskMapFragment = TaskMapFragment.newInstance()
+        var currentFragment = TaskListFragment.newInstance()
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.content_frame, currentFragment)
+            .commit()
+
+
+        dataBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
+
+            var fragment :Fragment? = null
+
+            when (it.itemId) {
+
+                R.id.menu_home -> {
+                     fragment = TaskListFragment.newInstance()
+
+                }
+                R.id.menu_map -> {
+                    fragment = TaskMapFragment.newInstance()
+
+                }
+                R.id.menu_settings -> {
+                    fragment= TaskListFragment.newInstance()
+                }
+            }
+
+            fragment?.apply {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.content_frame, fragment)
+                    .commit()
+            }
+
+            false
+
+        }
+
+        dataBinding.bottomNavigationView.selectedItemId = 0
 
         // TODO ViewPager2 Alpha not working well for now
 //        val viewPager2 = dataBinding.viewPager
@@ -106,21 +145,20 @@ class TasksActivity : DaggerAppCompatActivity() {
 //            viewPager2.adapter = this
 //        }
 
-        val viewPager = dataBinding.viewPager
+//        val viewPager = dataBinding.viewPager
+//
+//        val taskFragmentStatePagerAdapter = TaskFragmentStatePagerAdapter(supportFragmentManager)
+//
+//        taskFragmentStatePagerAdapter.apply {
+//            addFragment(taskListFragment, "List")
+//            addFragment(taskMapFragment, "Map")
+//            viewPager.adapter = this
+//        }
+//
+//        // Set up Tabs
+//        val tabLayout = dataBinding.tabs
+//        tabLayout.setupWithViewPager(viewPager)
 
-        val taskFragmentStatePagerAdapter = TaskFragmentStatePagerAdapter(supportFragmentManager)
-
-        taskFragmentStatePagerAdapter.apply {
-            addFragment(taskListFragment, "List")
-            addFragment(taskMapFragment, "Map")
-            viewPager.adapter = this
-        }
-
-        // Set up Tabs
-        val tabLayout = dataBinding.tabs
-        tabLayout.setupWithViewPager(viewPager)
-
-        subscribeUI()
 
     }
 
@@ -191,6 +229,7 @@ class TasksActivity : DaggerAppCompatActivity() {
             }
             com.smarttoolfactory.todoplus.R.id.menu_refresh -> {
                 taskListViewModel.loadTasks(true)
+                populateDB()
                 true
             }
             else -> false
@@ -222,7 +261,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         }
     }
 
-    fun editTask(taskId: Long) {
+    private fun editTask(taskId: Long) {
         val intent = Intent(this, AddEditTaskActivity::class.java)
         intent.putExtra(AddEditTaskActivity.TASK_BUNDLE, taskId)
         // start your next activity
@@ -266,7 +305,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         location.longitude = latLng.longitude
 
 
-        repeat(1000) {
+        repeat(10) {
 
             val customLocation = getLocationInLatLngRad(2_000_000.0, location)
 
