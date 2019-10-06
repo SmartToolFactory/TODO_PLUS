@@ -4,10 +4,7 @@ import android.content.Intent
 import android.location.Location
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
@@ -54,9 +51,13 @@ class TasksActivity : DaggerAppCompatActivity() {
 
         super.onCreate(savedInstanceState)
 
-        dataBinding = DataBindingUtil.setContentView(this, com.smarttoolfactory.todoplus.R.layout.activity_main)
+        dataBinding = DataBindingUtil.setContentView(
+            this,
+            com.smarttoolfactory.todoplus.R.layout.activity_main
+        )
 
-        taskListViewModel = ViewModelProviders.of(this, viewModelFactory).get(TaskListViewModel::class.java)
+        taskListViewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(TaskListViewModel::class.java)
 
         // 🔥 This is required if LiveData is used for data-binding
         dataBinding.lifecycleOwner = this
@@ -68,7 +69,10 @@ class TasksActivity : DaggerAppCompatActivity() {
           Method for popluating db with fake data
         */
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        isFistStart = sharedPreferences.getBoolean(getString(com.smarttoolfactory.todoplus.R.string.first_start), true)
+        isFistStart = sharedPreferences.getBoolean(
+            getString(com.smarttoolfactory.todoplus.R.string.first_start),
+            true
+        )
 
         if (isFistStart) {
 //            populateDB()
@@ -103,12 +107,12 @@ class TasksActivity : DaggerAppCompatActivity() {
 
         dataBinding.bottomNavigationView.setOnNavigationItemSelectedListener {
 
-            var fragment :Fragment? = null
+            var fragment: Fragment? = null
 
             when (it.itemId) {
 
                 R.id.menu_home -> {
-                     fragment = TaskListFragment.newInstance()
+                    fragment = TaskListFragment.newInstance()
 
                 }
                 R.id.menu_map -> {
@@ -116,7 +120,7 @@ class TasksActivity : DaggerAppCompatActivity() {
 
                 }
                 R.id.menu_settings -> {
-                    fragment= TaskListFragment.newInstance()
+                    fragment = TaskListFragment.newInstance()
                 }
             }
 
@@ -283,7 +287,8 @@ class TasksActivity : DaggerAppCompatActivity() {
      */
     private fun populateDB() {
 
-        val titleList = arrayOf("Work", "Hobby", "Shopping", "Travel", "Vacation", "Business", "Voyage")
+        val titleList =
+            arrayOf("Work", "Hobby", "Shopping", "Travel", "Vacation", "Business", "Voyage")
         val description = arrayOf(
             "Go to work",
             "Play a game",
@@ -294,8 +299,10 @@ class TasksActivity : DaggerAppCompatActivity() {
             "Visit moon"
         )
 
-        val addressList = arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
-        val tagList = arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
+        val addressList =
+            arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
+        val tagList =
+            arrayOf("Istanbul", "Berlin", "Paris", "London", "Amsterdam", "Helsinki", "Madrid")
 
         val random = Random()
 
@@ -304,6 +311,7 @@ class TasksActivity : DaggerAppCompatActivity() {
         location.latitude = latLng.latitude
         location.longitude = latLng.longitude
 
+        val gestureDetector: GestureDetector
 
         repeat(10) {
 
@@ -327,7 +335,10 @@ class TasksActivity : DaggerAppCompatActivity() {
 
     }
 
-    private fun getLocationInLatLngRad(radiusInMeters: Double, currentLocation: Location): Location {
+    private fun getLocationInLatLngRad(
+        radiusInMeters: Double,
+        currentLocation: Location
+    ): Location {
         val x0 = currentLocation.longitude
         val y0 = currentLocation.latitude
 

@@ -15,6 +15,7 @@ import com.smarttoolfactory.todoplus.R
 import com.smarttoolfactory.todoplus.data.model.Task
 import com.smarttoolfactory.todoplus.databinding.FragmentMapBinding
 import com.smarttoolfactory.todoplus.tasks.TaskListViewModel
+import com.smarttoolfactory.todoplus.tasks.TasksActivity
 import javax.inject.Inject
 
 class TaskMapFragment : BaseMapFragment<FragmentMapBinding>() {

@@ -6,12 +6,12 @@ import com.squareup.leakcanary.LeakCanary
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 
-class MyApplication : dagger.android.support.DaggerApplication() {
+class MyApplication : DaggerApplication() {
 
     override fun onCreate() {
         super.onCreate()
 
-        // TODO Fatih, Leakcanary is for testing memory leaks
+        // TODO Leakcanary is for testing memory leaks
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

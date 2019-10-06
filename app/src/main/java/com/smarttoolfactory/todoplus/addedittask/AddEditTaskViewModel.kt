@@ -30,7 +30,7 @@ constructor(
 
     val task: LiveData<Task> = _task
 
-    // 🔥🔥🔥 Transformaions.map works if livedata to be changed is observed directly or by data-binding
+    // 🔥🔥🔥 Transformations.map works if LiveData is observed directly or by data-binding
     /**
      * Used for data-binding to check if a location is set to task
      */

@@ -12,6 +12,9 @@ import com.smarttoolfactory.todoplus.tasks.adapter.TasksAdapter.CustomViewHolder
 
 /**
  * Adapter for the task list. Has a reference to the [TaskListViewModel] to send actions back to it.
+ *
+ * Layout of the rows is determined by type of the binding class. For this adapter it's [TaskItemBinding]
+ * which is retrieved from task_item.xml
  */
 class TasksAdapter(private val viewModel: TaskListViewModel) :
         ListAdapter<Task, CustomViewHolder>(TaskDiffCallback()) {
@@ -33,16 +36,11 @@ class TasksAdapter(private val viewModel: TaskListViewModel) :
     }
 
 
-
-
-    class CustomViewHolder private constructor(val binding: TaskItemBinding) :
+    class CustomViewHolder private constructor(private val binding: TaskItemBinding) :
             RecyclerView.ViewHolder(binding.root) {
 
 
-
-
         fun bind(viewModel: TaskListViewModel, item: Task) {
-
             binding.viewmodel = viewModel
             binding.task = item
             binding.executePendingBindings()
